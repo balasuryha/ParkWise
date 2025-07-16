@@ -1,0 +1,40 @@
+/* Font import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+:root {
+  --primary: #2b2d42;         /* Zenpark-like navy */
+  --accent: #1c1f3c;          /* Zenpark pink */
+  --text: #1a1a1a;
+  --bg: #f7f7f8;
+  --border: #eaeaea;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  color: var(--text);
+  background-color: var(--bg);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}

@@ -1,0 +1,254 @@
+.hero-search {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.search-tabs {
+  display: flex;
+  margin-bottom: 1.5rem;
+}
+
+.search-tabs button {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 12px 12px 0 0;
+  background: #f3f3f3;
+  cursor: pointer;
+  font-weight: 600;
+  color: #444;
+  transition: all 0.2s ease;
+}
+
+.search-tabs button.active {
+  background: #1c1f3c;
+  color: #fff;
+}
+
+.search-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  width: 100%;
+}
+
+.input-group {
+  position: relative;
+  flex: 1 1 100%;
+}
+
+.input-group.half {
+  flex: 1 1 calc(50% - 0.5rem);
+}
+
+.input-group input {
+  width: 100%;
+  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+  border: 1px solid #ffffff;
+  border-radius: 10px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.input-group input:focus {
+  border-color: #1c1f3c;
+}
+
+.input-group .icon {
+  position: absolute;
+  top: 50%;
+  left: 0.8rem;
+  transform: translateY(-50%);
+  color: #999;
+  font-size: 1rem;
+}
+
+.vehicle-dropdown-container {
+  position: relative;
+  width: 100%;
+}
+
+.vehicle-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 1rem;
+  z-index: 100;
+  margin-top: 0.5rem;
+}
+
+.vehicle-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.vehicle-header .icon {
+  margin-right: 0.5rem;
+  color: #555;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 22px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider.round {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.switch input:checked + .slider.round {
+  background-color: #00c853;
+}
+
+.switch input:checked + .slider.round:before {
+  transform: translateX(20px);
+}
+
+.vehicle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.vehicle-option {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+  background: #fafafa;
+  text-align: center;
+}
+
+.vehicle-option:hover,
+.vehicle-option.selected {
+  border-color: #1c1f3c;
+  background: #fff0f5;
+}
+
+.vehicle-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.vehicle-label strong {
+  display: block;
+  font-size: 1rem;
+}
+
+.vehicle-label p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.cta-btn {
+  background-color: #1c1f3c;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 100%;
+  transition: background 0.2s;
+}
+
+.cta-btn:hover {
+  background-color: #1c1f3c;
+}
+
+@media screen and (max-width: 768px) {
+  .search-fields {
+    flex-direction: column;
+  }
+
+  .input-group,
+  .input-group.half {
+    flex: 1 1 100%;
+  }
+
+  .cta-btn {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .hero-content {
+    padding: 1rem;
+  }
+
+  .hero-search {
+    padding: 1rem;
+    width: 95%;
+  }
+
+  .input-group,
+  .input-group input {
+    width: 100%;
+  }
+}
+/* .near-me-btn {
+  background-color: #1c1f3c;
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  margin: 1rem auto;
+  display: block;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.near-me-btn:hover {
+  background-color: #1c1f3c;
+} */

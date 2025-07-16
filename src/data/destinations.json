@@ -1,0 +1,26 @@
+[
+  {
+    "city": "Brussels",
+    "image": "/assets/cities/brussels.jpg",
+    "spots": 5,
+    "tags": ["Train stations", "Tourist places", "Stadiums", "Theaters/Shows", "Museums"]
+  },
+  {
+    "city": "Paris",
+    "image": "/assets/cities/paris.jpg",
+    "spots": 271,
+    "tags": ["Districts", "Airports", "Tourist places", "Train stations"]
+  },
+  {
+    "city": "Lyon",
+    "image": "/assets/cities/lyon.jpg",
+    "spots": 32,
+    "tags": ["Districts", "Neighborhoods", "Theaters/Shows"]
+  },
+  {
+    "city": "Marseille",
+    "image": "/assets/cities/marseille.jpg",
+    "spots": 13,
+    "tags": ["Districts", "Tourist places", "Stadiums"]
+  }
+]
