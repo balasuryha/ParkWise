@@ -1,0 +1,63 @@
+/* src/styles/pages/ParkingPage.css */
+
+.parking-page {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  padding: 2rem;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.spots-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.spot-card {
+  display: flex;
+  gap: 1rem;
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.spot-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.spot-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.spot-info h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.spot-info a {
+  color: #5d3fd3;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.spots-map {
+  flex: 1;
+  min-height: 400px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .parking-page {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,127 @@
+/* Base styles */
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+}
+
+.hero-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-card-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+
+
+/* Title */
+.hero-wrapper h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(0,0,0,0.7);
+  margin-bottom: 0.5rem;
+}
+
+/* Subtitle */
+.hero-wrapper p {
+  font-size: 1.2rem;
+  color: #e0e0e0;
+  text-shadow: 0 0 5px rgba(0,0,0,0.4);
+  margin-bottom: 2.5rem;
+}
+
+/* Card container */
+.hero-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border-radius: 28px;
+  padding: 3rem;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  align-items: center;
+}
+
+
+/* Form layout */
+.hero-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* Input fields */
+.input-field,
+input[type="time"],
+select {
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Time range inputs */
+.date-pickers {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.date-pickers input[type="time"] {
+  flex: 1;
+}
+
+.date-pickers span {
+  font-size: 1.5rem;
+  color: #888;
+}
+
+/* Button: dark purple theme */
+.search-btn {
+  background-color: #5D3FD3;
+  color: white;
+  border: none;
+  padding: 1rem;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-btn:hover {
+  background-color: #4a32b4;
+}
+
+/* Responsive design */
+@media screen and (max-width: 480px) {
+  .hero-wrapper h1 {
+    font-size: 2rem;
+  }
+
+  .hero-card {
+    padding: 2rem 1rem;
+  }
+
+  .date-pickers {
+    flex-direction: column;
+  }
+
+  .date-pickers span {
+    display: none;
+  }
+}

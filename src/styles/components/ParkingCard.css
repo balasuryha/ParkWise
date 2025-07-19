@@ -1,0 +1,42 @@
+/* src/styles/components/ParkingCard.css */
+
+.parking-card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  margin: 12px 0;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.parking-card:hover {
+  transform: translateY(-4px);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.parking-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.available-tag {
+  background-color: #e6f4ea;
+  color: #2e7d32;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.parking-address {
+  margin-top: 4px;
+  color: #777;
+  font-size: 0.95rem;
+}
