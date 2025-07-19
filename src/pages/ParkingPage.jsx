@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import ParkingMap from '../components/ParkingMap'; // correct import
 import '../styles/pages/ParkingPage.css';
+import Navbar from '../components/Navbar';
 
 export default function ParkingPage() {
   const [spots, setSpots] = useState([]);
@@ -42,22 +43,25 @@ export default function ParkingPage() {
   }, []);
 
   return (
-    <div className="parking-page">
-      <div className="spots-list">
-        <h2>Available Parking Spots</h2>
-        {spots.map((spot) => (
-          <div key={spot.id} className="spot-card">
-            <img src={spot.imageUrl} alt={spot.name} className="spot-img" />
-            <div className="spot-info">
-              <h3>{spot.name}</h3>
-              <a href={`/forecast/${spot.id}`}>See forecast availability →</a>
-            </div>
+    <>
+      <Navbar />
+        <div className="parking-page">
+          <div className="spots-list">
+            <h2>Available Parking Spots</h2>
+            {spots.map((spot) => (
+              <div key={spot.id} className="spot-card">
+                <img src={spot.imageUrl} alt={spot.name} className="spot-img" />
+                <div className="spot-info">
+                  <h3>{spot.name}</h3>
+                  <a href={`/forecast/${spot.id}`}>See forecast availability →</a>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <div className="spots-map">
-        <ParkingMap facilities={spots} />
-      </div>
-    </div>
+          <div className="spots-map">
+            <ParkingMap facilities={spots} />
+          </div>
+        </div>
+    </>
   );
 }

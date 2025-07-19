@@ -11,6 +11,7 @@ import {
 import MapboxMap from '../components/MapboxMap';
 import RecommendationList from '../components/RecommendationList';
 import EventList from '../components/EventList';
+import Navbar from '../components/Navbar';
 
 export default function ParkingDetailPage() {
   const { id } = useParams();
@@ -51,36 +52,40 @@ export default function ParkingDetailPage() {
   };
 
   return (
-    <div className="parking-detail-page">
-      <h2>{facility.name}</h2>
-      <p>{facility.address}</p>
+    <>
+      <Navbar />
+        <div className="parking-detail-page">
+          <h2>{facility.name}</h2>
+          <p>{facility.address}</p>
 
-      <div className="availability">
-        <strong>{status?.available || '—'} spots available</strong>
-        <p>{forecast?.summary || ''}</p>
-      </div>
+          <div className="availability">
+            <strong>{status?.available || '—'} spots available</strong>
+            <p>{forecast?.summary || ''}</p>
+          </div>
 
-      <section>
-        <h3>Event Impact</h3>
-        <EventList events={events} />
-      </section>
+          <section>
+            <h3>Event Impact</h3>
+            <EventList events={events} />
+          </section>
 
-      <section>
-        <h3>Forecasted Occupancy (24 hrs)</h3>
-        <button onClick={() => downloadForecastCSV(id)}>Download Forecast CSV</button>
-        <img src={`http://localhost:5000/forecast/${id}/csv/graph.png`} alt="Forecast Graph" />
-      </section>
+          <section>
+            <h3>Forecasted Occupancy (24 hrs)</h3>
+            <button onClick={() => downloadForecastCSV(id)}>Download Forecast CSV</button>
+            <img src={`http://localhost:5000/forecast/${id}/csv/graph.png`} alt="Forecast Graph" />
+          </section>
 
-      <section>
-        <h3>Alternate Parking Recommendations</h3>
-        <RecommendationList list={recommendations} />
-      </section>
+          <section>
+            <h3>Alternate Parking Recommendations</h3>
+            <RecommendationList list={recommendations} />
+          </section>
 
-      <section>
-        <h3>Location</h3>
-        <MapboxMap facilities={[facility]} />
-        <button onClick={handleDirections} className="directions-btn">Get Directions</button>
-      </section>
-    </div>
+          <section>
+            <h3>Location</h3>
+            <MapboxMap facilities={[facility]} />
+            <button onClick={handleDirections} className="directions-btn">Get Directions</button>
+          </section>
+        </div>
+    </>
+    
   );
 }
