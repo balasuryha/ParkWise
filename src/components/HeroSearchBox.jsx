@@ -63,7 +63,7 @@ export default function HeroSearchBox({ onSearch }) {
     {
       label: (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <FaClock /> Paris, France
+          Paris, France
         </div>
       ),
       value: 'Paris',
@@ -71,7 +71,7 @@ export default function HeroSearchBox({ onSearch }) {
     {
       label: (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <FaClock /> Lyon, France
+          Lyon, France
         </div>
       ),
       value: 'Lyon',
@@ -79,7 +79,7 @@ export default function HeroSearchBox({ onSearch }) {
     {
       label: (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <FaClock /> Nice, France
+          Nice, France
         </div>
       ),
       value: 'Nice',
@@ -87,7 +87,7 @@ export default function HeroSearchBox({ onSearch }) {
     {
       label: (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <FaClock /> Marseille, France
+          Marseille, France
         </div>
       ),
       value: 'Marseille',
