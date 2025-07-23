@@ -3,6 +3,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import Home from './pages/Home';
+import Login from './pages/Login';
 import ParkingList from './pages/ParkingList';
 import ParkingSpotsList from './pages/ParkingSpotsList';
 import Signup from './pages/Signup';
@@ -18,6 +19,7 @@ function App() {
             <Route path="/parking-list" element={<ParkingList />} />
             <Route path="/all-parking" element={<ParkingSpotsList />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </main>
         <Footer />
