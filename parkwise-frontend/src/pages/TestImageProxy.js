@@ -5,6 +5,7 @@ function TestImageProxy() {
   const [inputUrl, setInputUrl] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [error, setError] = useState('');
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -13,7 +14,7 @@ function TestImageProxy() {
       return;
     }
     setError('');
-    setImageUrl(`http://localhost:8000/parking-spots/image?url=${encodeURIComponent(inputUrl)}`);
+    setImageUrl(`${BACKEND_URL}/parking-spots/image?url=${encodeURIComponent(inputUrl)}`);
   };
 
   return (

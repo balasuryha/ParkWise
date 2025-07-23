@@ -2,7 +2,10 @@ import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Footer from './components/Footer';
 import Header from './components/Header';
+import Forecast from './pages/Forecast';
 import Home from './pages/Home';
+import Login from './pages/Login';
+import MonitorParking from './pages/MonitorParking';
 import ParkingList from './pages/ParkingList';
 import ParkingSpotsList from './pages/ParkingSpotsList';
 import Signup from './pages/Signup';
@@ -18,6 +21,9 @@ function App() {
             <Route path="/parking-list" element={<ParkingList />} />
             <Route path="/all-parking" element={<ParkingSpotsList />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/forecast" element={<Forecast />} />
+            <Route path="/monitor-parking" element={<MonitorParking />} />
           </Routes>
         </main>
         <Footer />
