@@ -2,7 +2,7 @@
   "name": "parkwise-frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://sakthikeerthiga.github.io/parkwise",
+  "homepage": "https://balasuryha.github.io/ParkWise",
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -24,7 +24,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "REACT_APP_BACKEND_URL=http://16.16.45.182:8000 react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
