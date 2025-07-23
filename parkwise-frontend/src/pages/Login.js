@@ -6,6 +6,7 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -14,7 +15,7 @@ export default function Login() {
     setError('');
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8000/login', {
+      const res = await fetch(`${BACKEND_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -25,7 +26,10 @@ export default function Login() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || 'Login failed');
       if (data.access_token) {
-        localStorage.setItem('authToken', data.access_token);
+        localStorage.setItem('access_token', data.access_token);
+        localStorage.setItem('refresh_token', data.refresh_token);
+        localStorage.setItem('user_email', data.user_email);
+        localStorage.setItem('subscription', data.subscription);
         navigate('/dashboard');
       } else {
         throw new Error('No token received');

@@ -30,7 +30,7 @@ function Home() {
   const [popularSpots, setPopularSpots] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:8000/parking-spots?limit=6')
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/parking-spots?limit=6`)
       .then(res => res.json())
       .then(data => setPopularSpots(data));
   }, []);
