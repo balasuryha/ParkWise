@@ -7,19 +7,27 @@ function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef();
   const navigate = useNavigate();
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      fetch('http://localhost:8000/profile', {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-        .then(res => res.ok ? res.json() : null)
-        .then(data => {
-          if (data && data.email) setUser(data);
-        });
+    // Try to get user_email from localStorage first
+    const email = localStorage.getItem('user_email');
+    const subscription = localStorage.getItem('subscription');
+    if (email) {
+      setUser({ email, subscription });
+    } else {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        fetch(`${BACKEND_URL}/profile`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+          .then(res => res.ok ? res.json() : null)
+          .then(data => {
+            if (data && data.email) setUser(data);
+          });
+      }
     }
-  }, []);
+  }, [BACKEND_URL]);
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -36,9 +44,48 @@ function Header() {
   }, [dropdownOpen]);
 
   const handleLogout = () => {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user_email');
+    localStorage.removeItem('subscription');
     setUser(null);
     navigate('/login');
+  };
+
+  const handleUpgradeToPremium = () => {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    // Since the existing endpoint only checks access, we'll simulate the upgrade
+    // In a real scenario, you'd need a separate upgrade endpoint
+    fetch(`${BACKEND_URL}/premium-feature`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(res => {
+        if (res.ok) {
+          // User is already premium
+          return res.json();
+        } else if (res.status === 403) {
+          // User is not premium - simulate upgrade
+          localStorage.setItem('subscription', 'premium');
+          setUser(prev => ({ ...prev, subscription: 'premium' }));
+          alert('Upgrade simulation: Your account has been upgraded to Premium! Contact support for actual billing.');
+          setDropdownOpen(false);
+          return { message: "Upgraded to premium" };
+        } else {
+          throw new Error('Failed to process upgrade');
+        }
+      })
+      .catch(error => {
+        alert(`Error: ${error.message}`);
+      });
   };
 
   return (
@@ -51,9 +98,16 @@ function Header() {
         <Navbar.Collapse id="navbar-nav" className="justify-content-end">
           <Nav className="align-items-center">
             <Nav.Link as={Link} to="/all-parking" className="fw-semibold mx-2">FIND PARKING</Nav.Link>
+            {user && user.subscription === 'premium' && (
+              <>
+                <Nav.Link as={Link} to="/forecast" className="fw-semibold mx-2">FORECAST</Nav.Link>
+                <Nav.Link as={Link} to="/monitor-parking" className="fw-semibold mx-2">MONITOR PARKING</Nav.Link>
+              </>
+            )}
             <Nav.Link as={Link} to="#" className="fw-semibold mx-2">ABOUT</Nav.Link>
             {user ? (
-              <div style={{ position: 'relative' }} ref={dropdownRef}>
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }} ref={dropdownRef}>
+               
                 <div
                   style={{
                     width: 38,
@@ -69,40 +123,92 @@ function Header() {
                     cursor: 'pointer',
                   }}
                   onClick={() => setDropdownOpen(v => !v)}
-                ></div>
+                >
+                  {user.email ? user.email[0].toUpperCase() : 'U'}
+                </div>
                 {dropdownOpen && (
                   <div style={{
                     position: 'absolute',
                     top: 48,
                     right: 0,
-                    minWidth: 260,
-                    background: '#18191c',
-                    color: '#fff',
-                    borderRadius: 16,
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+                    minWidth: 280,
+                    background: '#ffffff',
+                    color: '#333',
+                    borderRadius: 12,
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
                     padding: 0,
                     zIndex: 1000,
+                    border: '1px solid #e1e5e9'
                   }}>
-                    <div style={{ padding: '18px 20px 6px 20px', fontWeight: 700, fontSize: 17, color: '#fff' }}>{user.name || 'User'}</div>
-                    <div style={{ padding: '0 20px 12px 20px', fontSize: 14, color: '#bdbdbd' }}>{user.email}</div>
-                    <div style={{ padding: '10px 20px', fontSize: 15, cursor: 'pointer', color: '#fff', borderTop: '1px solid #232428' }}>
-                      Download for Windows
+                    <div style={{ 
+                      padding: '20px 24px 16px 24px', 
+                      borderBottom: '1px solid #f0f0f0',
+                      background: 'linear-gradient(135deg, rgb(102, 126, 234) 0%, rgb(75 162 122) 100%)',
+                      color: '#fff',
+                      borderRadius: '12px 12px 0 0'
+                    }}>
+                      <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 4 }}>Welcome Back</div>
+                      <div style={{ fontSize: 14, opacity: 0.9 }}>{user.email}</div>
                     </div>
-                    <div style={{ borderTop: '1px solid #232428', margin: '0 0 0 0' }}></div>
-                    <div
-                      style={{
-                        padding: '14px 20px',
-                        fontWeight: 600,
-                        color: '#fff',
-                        fontSize: 15,
-                        display: 'flex',
-                        alignItems: 'center',
+                    <div style={{ padding: '16px 24px', borderBottom: '1px solid #f0f0f0' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span style={{ fontSize: 14, color: '#666' }}>Current Plan</span>
+                        <span style={{ 
+                          fontSize: 14, 
+                          fontWeight: 600,
+                          color: user.subscription === 'premium' ? '#ff6b35' : '#1886ff',
+                          background: user.subscription === 'premium' ? '#fff3e0' : '#e3f2fd',
+                          padding: '4px 12px',
+                          borderRadius: 20,
+                          border: `1px solid ${user.subscription === 'premium' ? '#ffcc80' : '#bbdefb'}`
+                        }}>
+                          {user.subscription === 'premium' ? 'Premium' : 'Free'}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div style={{ padding: '16px 24px', borderBottom: '1px solid #f0f0f0' }}>
+                      <div style={{ 
+                        padding: '12px 16px',
                         cursor: 'pointer',
-                        justifyContent: 'space-between',
+                        transition: 'background 0.2s ease',
+                        borderRadius: 6
                       }}
-                      onClick={handleLogout}
-                    >
-                      Log Out <span style={{ fontSize: 18, marginLeft: 8, color: '#bdbdbd' }}>&#8594;</span>
+                      onMouseEnter={(e) => e.target.style.background = '#f5f5f5'}
+                      onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                      onClick={() => navigate('/send-alert')}>
+                        <span style={{ fontWeight: 500, color: '#333', fontSize: 14 }}>Send Parking Alert</span>
+                      </div>
+                    </div>
+                    {user.subscription !== 'premium' && (
+                      <div style={{ padding: '12px 24px', borderBottom: '1px solid #f0f0f0' }}>
+                        <div style={{ 
+                          padding: '12px 16px',
+                          cursor: 'pointer',
+                          transition: 'background 0.2s ease',
+                          borderRadius: 6,
+                          background: 'linear-gradient(135deg, #ff6b35 0%, #ff8a50 100%)',
+                          color: '#fff'
+                        }}
+                        onMouseEnter={(e) => e.target.style.background = 'linear-gradient(135deg, #ff5722 0%, #ff7043 100%)'}
+                        onMouseLeave={(e) => e.target.style.background = 'linear-gradient(135deg, #ff6b35 0%, #ff8a50 100%)'}
+                        onClick={handleUpgradeToPremium}>
+                          <span style={{ fontWeight: 600, color: '#fff', fontSize: 14 }}>Upgrade to Premium</span>
+                        </div>
+                      </div>
+                    )}
+                    <div style={{ padding: '16px 24px 16px 24px' }}>
+                      <div style={{ 
+                        padding: '12px 16px',
+                        cursor: 'pointer',
+                        transition: 'background 0.2s ease',
+                        borderRadius: 6
+                      }}
+                      onMouseEnter={(e) => e.target.style.background = '#f5f5f5'}
+                      onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                      onClick={handleLogout}>
+                        <span style={{ fontWeight: 500, color: '#333', fontSize: 14 }}>Sign Out</span>
+                      </div>
                     </div>
                   </div>
                 )}

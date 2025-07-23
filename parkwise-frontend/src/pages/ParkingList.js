@@ -19,11 +19,12 @@ function ParkingList() {
     process.env.PUBLIC_URL + '/parking4.jpg'
   ];
 
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
   useEffect(() => {
     if (location.state) {
       const { lat, lng, vehicleType } = location.state;
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
-      fetch(`${backendUrl}/nearby-parking?lat=${lat}&lon=${lng}&radius_km=10&vehicle_type=${vehicleType}`)
+      fetch(`${BACKEND_URL}/nearby-parking?lat=${lat}&lon=${lng}&radius_km=10&vehicle_type=${vehicleType}`)
         .then(response => {
           if (!response.ok) {
             // If 404, treat as no parking found, not a fatal error
