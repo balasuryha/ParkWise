@@ -9,7 +9,7 @@ const fallbackImages = [
 ];
 
 const PAGE_SIZE = 5;
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 // Utility to normalize strings (remove accents, lowercase)
 function normalizeString(str) {
@@ -29,6 +29,17 @@ function ParkingSpotsList() {
   const [noResults, setNoResults] = useState(false);
   const loader = useRef(null);
   const [isSearching, setIsSearching] = useState(false);
+  const [forceUpdate, setForceUpdate] = useState(0); // Force re-render
+
+  // Debug: Log search value changes
+  useEffect(() => {
+    console.log('Search value changed:', search);
+  }, [search]);
+
+  // Debug: Log spots state changes
+  useEffect(() => {
+    console.log('Spots state changed:', spots.length, 'spots:', spots.map(s => s.nom_parking));
+  }, [spots]);
 
   // Fetch spots with pagination
   const fetchSpots = useCallback(async () => {
@@ -68,31 +79,100 @@ function ParkingSpotsList() {
 
   // Search functionality
   const handleSearch = async () => {
-    if (!search) {
+    console.log('handleSearch called with search term:', search);
+    
+    if (!search.trim()) {
+      console.log('Empty search, resetting to normal view');
       setPage(0);
       setSpots([]);
       setHasMore(true);
       setIsSearching(false);
+      setNoResults(false);
       fetchSpots();
       return;
     }
+    
     setLoading(true);
     setIsSearching(true);
-    // Fetch all spots (or a large enough set)
-    const res = await fetch(`${BACKEND_URL}/parking-spots?limit=1000&offset=0`);
-    const data = await res.json();
-    console.log('Fetched spots:', data); // Debug log
-    const spotsArray = Array.isArray(data) ? data : (Array.isArray(data.data) ? data.data : []);
-    const searchNorm = normalizeString(search);
-    const filtered = spotsArray.filter(spot =>
-      normalizeString(spot.nom_parking || spot.name || '').includes(searchNorm)
-    );
-    console.log('Filtered spots:', filtered, 'Search:', searchNorm); // Debug log
-    setSpots(filtered);
-    setLoading(false);
-    setNoResults(filtered.length === 0);
-    setHasMore(false); // Disable infinite scroll during search
+    setNoResults(false);
+    
+    try {
+      // Fetch all spots (or a large enough set)
+      const res = await fetch(`${BACKEND_URL}/parking-spots?limit=1000&offset=0`);
+      if (!res.ok) {
+        throw new Error('Failed to fetch parking spots');
+      }
+      
+      const data = await res.json();
+      console.log('Raw API response length:', Array.isArray(data) ? data.length : 'not array');
+      
+      const spotsArray = Array.isArray(data) ? data : (Array.isArray(data.data) ? data.data : []);
+      console.log('Processed spots array length:', spotsArray.length);
+      
+      if (spotsArray.length === 0) {
+        console.log('No spots found in API response');
+        setSpots([]);
+        setNoResults(true);
+        return;
+      }
+      
+      // Log first few spots to see structure
+      console.log('First 3 spots:', spotsArray.slice(0, 3).map(s => ({ 
+        facilityid: s.facilityid, 
+        nom_parking: s.nom_parking 
+      })));
+      
+      const searchNorm = normalizeString(search.trim());
+      console.log('Search term (normalized):', searchNorm);
+      
+      const filtered = spotsArray.filter(spot => {
+        const name = spot.nom_parking || spot.name || spot.facility_name || spot.nom || spot.title || '';
+        const address = spot.address || spot.adresse || spot.location || '';
+        const description = spot.description || spot.desc || '';
+        
+        // Create searchable text from all fields
+        const searchableText = `${name} ${address} ${description}`.toLowerCase();
+        const normalizedSearchableText = normalizeString(searchableText);
+        
+        console.log(`Checking: "${name}" | Searchable: "${searchableText}" | Normalized: "${normalizedSearchableText}" | Includes "${searchNorm}": ${normalizedSearchableText.includes(searchNorm)}`);
+        
+        return normalizedSearchableText.includes(searchNorm);
+      });
+      
+      console.log('Filtered spots count:', filtered.length, 'out of', spotsArray.length);
+      console.log('Filtered spots names:', filtered.map(s => s.nom_parking));
+      
+      // Force a state update by creating a new array
+      setSpots([...filtered]);
+      setNoResults(filtered.length === 0);
+      setForceUpdate(prev => prev + 1); // Force re-render
+    } catch (error) {
+      console.error('Search error:', error);
+      setNoResults(true);
+    } finally {
+      setLoading(false);
+      setHasMore(false); // Disable infinite scroll during search
+    }
   };
+
+  // Remove real-time search for now - only search when button is clicked
+  // useEffect(() => {
+  //   const timeoutId = setTimeout(() => {
+  //     if (search.trim()) {
+  //       handleSearch();
+  //     } else if (isSearching) {
+  //       // If search is cleared, reset to normal view
+  //       setPage(0);
+  //       setSpots([]);
+  //       setHasMore(true);
+  //       setIsSearching(false);
+  //       setNoResults(false);
+  //       fetchSpots();
+  //     }
+  //   }, 500); // Debounce search by 500ms
+
+  //   return () => clearTimeout(timeoutId);
+  // }, [search]);
 
   const handleClearSearch = () => {
     setSearch('');
@@ -112,7 +192,7 @@ function ParkingSpotsList() {
         <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
           <input
             type="text"
-            placeholder="Search parking spots..."
+            placeholder="Search parking spots by name, address..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{
@@ -157,12 +237,13 @@ function ParkingSpotsList() {
             Clear
           </button>
         </div>
+        {console.log('Rendering spots:', spots.length, 'loading:', loading, 'noResults:', noResults)}
         {Array.isArray(spots) && spots.length === 0 && !loading && noResults ? (
           <div style={{ color: '#888', textAlign: 'center', margin: 32 }}>No parking found</div>
         ) : (
           spots.map((spot, idx) => (
             <div
-              key={spot.facilityid || spot.id}
+              key={`${spot.facilityid || spot.id}-${idx}`}
               className="card mb-3 shadow-sm"
               style={{
                 display: 'flex',
