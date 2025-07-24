@@ -6,3 +6,4 @@ matplotlib
 geopy
 supabase
 python-dotenv
+requests
