@@ -32,7 +32,15 @@ function Home() {
   useEffect(() => {
     fetch(`${process.env.REACT_APP_BACKEND_URL}/parking-spots?limit=6`)
       .then(res => res.json())
-      .then(data => setPopularSpots(data));
+      .then(data => {
+        if (Array.isArray(data)) {
+          setPopularSpots(data);
+        } else if (Array.isArray(data.data)) {
+          setPopularSpots(data.data);
+        } else {
+          setPopularSpots([]);
+        }
+      });
   }, []);
 
   // REMOVED useEffect to fetch vehicle types from API
@@ -429,7 +437,7 @@ function Home() {
                 Enjoy the convenience of booking a parking spot at the venue ahead of time, ensuring you have a space when you arrive for games, concerts, and more.
               </div>
               <div className="mb-4" style={{ maxWidth: 400 }}>
-                {popularSpots.map(spot => (
+                {(Array.isArray(popularSpots) ? popularSpots : []).map(spot => (
                   <div key={spot.facilityid || spot.id}>
                     <a
                       href={`https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=${spot.latitude},${spot.longitude}`}
@@ -462,10 +470,10 @@ function Home() {
         padding: 0
       }}>
         <div style={{ width: '100%', height: 400 }}>
-          <ParkingMap spots={popularSpots.filter(
+          <ParkingMap spots={Array.isArray(popularSpots) ? popularSpots.filter(
             spot => spot.latitude !== undefined && spot.longitude !== undefined &&
                     !isNaN(Number(spot.latitude)) && !isNaN(Number(spot.longitude))
-          )} />
+          ) : []} />
         </div>
       </div>
       {/* No current location display below */}

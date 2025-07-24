@@ -59,9 +59,11 @@ function Forecast() {
     setPlotUrl('');
 
     try {
+      // Format startDate to YYYY-MM-DD for backend
+      const formattedStartDate = startDate.split('T')[0];
       // Get forecast data
       const forecastResponse = await fetch(
-        `${BACKEND_URL}/forecast?facility_id=${selectedFacility}&start_date=${startDate}`
+        `${BACKEND_URL}/forecast?facility_id=${selectedFacility}&start_date=${formattedStartDate}`
       );
       
       if (!forecastResponse.ok) {
@@ -73,7 +75,7 @@ function Forecast() {
 
       // Get forecast plot
       const plotResponse = await fetch(
-        `${BACKEND_URL}/forecast-parking?facilityid=${selectedFacility}&start_date=${startDate}`
+        `${BACKEND_URL}/forecast-parking?facilityid=${selectedFacility}&start_date=${formattedStartDate}`
       );
       
       if (plotResponse.ok) {

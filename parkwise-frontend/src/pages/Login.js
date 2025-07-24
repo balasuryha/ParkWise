@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
+  // Check for success message in query params
+  const params = new URLSearchParams(location.search);
+  const showSuccess = params.get('success') === '1';
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -30,7 +35,7 @@ export default function Login() {
         localStorage.setItem('refresh_token', data.refresh_token);
         localStorage.setItem('user_email', data.user_email);
         localStorage.setItem('subscription', data.subscription);
-        navigate('/dashboard');
+        window.location = '/';
       } else {
         throw new Error('No token received');
       }
@@ -64,6 +69,11 @@ export default function Login() {
           <h2 style={{ fontWeight: 700, margin: 0 }}>Welcome Back</h2>
         </div>
         <form onSubmit={handleSubmit}>
+          {showSuccess && (
+            <div style={{ color: 'green', marginBottom: 12 }}>
+              Registration successful! Please log in.
+            </div>
+          )}
           <div style={{ marginBottom: 18 }}>
             <input
               name="email"

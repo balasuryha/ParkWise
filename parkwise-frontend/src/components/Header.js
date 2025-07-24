@@ -23,7 +23,7 @@ function Header() {
         })
           .then(res => res.ok ? res.json() : null)
           .then(data => {
-            if (data && data.email) setUser(data);
+            if (data && data.email) setUser({ email: data.email, subscription: data.subscription || 'free' });
           });
       }
     }
@@ -59,10 +59,8 @@ function Header() {
       return;
     }
 
-    // Since the existing endpoint only checks access, we'll simulate the upgrade
-    // In a real scenario, you'd need a separate upgrade endpoint
-    fetch(`${BACKEND_URL}/premium-feature`, {
-      method: 'GET',
+    fetch(`${BACKEND_URL}/upgrade-subscription`, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`
@@ -70,17 +68,13 @@ function Header() {
     })
       .then(res => {
         if (res.ok) {
-          // User is already premium
-          return res.json();
-        } else if (res.status === 403) {
-          // User is not premium - simulate upgrade
           localStorage.setItem('subscription', 'premium');
           setUser(prev => ({ ...prev, subscription: 'premium' }));
-          alert('Upgrade simulation: Your account has been upgraded to Premium! Contact support for actual billing.');
+          alert('Your account has been upgraded to Premium!');
           setDropdownOpen(false);
-          return { message: "Upgraded to premium" };
+          return res.json();
         } else {
-          throw new Error('Failed to process upgrade');
+          throw new Error('Failed to upgrade subscription');
         }
       })
       .catch(error => {
@@ -167,19 +161,22 @@ function Header() {
                       </div>
                     </div>
                     
-                    <div style={{ padding: '16px 24px', borderBottom: '1px solid #f0f0f0' }}>
-                      <div style={{ 
-                        padding: '12px 16px',
-                        cursor: 'pointer',
-                        transition: 'background 0.2s ease',
-                        borderRadius: 6
-                      }}
-                      onMouseEnter={(e) => e.target.style.background = '#f5f5f5'}
-                      onMouseLeave={(e) => e.target.style.background = 'transparent'}
-                      onClick={() => navigate('/send-alert')}>
-                        <span style={{ fontWeight: 500, color: '#333', fontSize: 14 }}>Send Parking Alert</span>
+                    {/* Send Parking Alert - only for premium users */}
+                    {user.subscription === 'premium' && (
+                      <div style={{ padding: '16px 24px', borderBottom: '1px solid #f0f0f0' }}>
+                        <div style={{ 
+                          padding: '12px 16px',
+                          cursor: 'pointer',
+                          transition: 'background 0.2s ease',
+                          borderRadius: 6
+                        }}
+                        onMouseEnter={(e) => e.target.style.background = '#f5f5f5'}
+                        onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                        onClick={() => navigate('/send-alert')}>
+                          <span style={{ fontWeight: 500, color: '#333', fontSize: 14 }}>Send Parking Alert</span>
+                        </div>
                       </div>
-                    </div>
+                    )}
                     {user.subscription !== 'premium' && (
                       <div style={{ padding: '12px 24px', borderBottom: '1px solid #f0f0f0' }}>
                         <div style={{ 

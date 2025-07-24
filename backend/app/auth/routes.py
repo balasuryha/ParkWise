@@ -74,13 +74,20 @@ def login(data: LoginRequest):
         # If we get here, the call succeeded; any bad‑password case would
         # already have raised AuthApiError
         if res.user is None or res.session is None:
-            # Extremely defensive – shouldn’t normally happen
+            # Extremely defensive – shouldn't normally happen
             raise HTTPException(status_code=401, detail="Invalid credentials")
+
+        # Fetch subscription from users table
+        profile = supabase.table("users").select("subscription").eq("email", data.email).execute()
+        subscription = "free"  # default
+        if profile.data and profile.data[0]:
+            subscription = profile.data[0]["subscription"]
 
         return {
             "access_token": res.session.access_token,
             "refresh_token": res.session.refresh_token,
             "user_email": res.user.email,
+            "subscription": subscription
         }
 
     except AuthApiError as e:                    # bad password, unknown user, etc.
@@ -107,3 +114,16 @@ def premium_feature(user = Depends(get_current_user)):
     if profile.data and profile.data[0]["subscription"] != "premium":
         raise HTTPException(status_code=403, detail="Upgrade to premium to access this feature.")
     return {"message": "Welcome, premium user!"}
+
+@router.post("/upgrade-subscription")
+def upgrade_subscription(user=Depends(get_current_user)):
+    try:
+        # Update the user's subscription to 'premium' in the users table
+        update_res = supabase.table("users").update({"subscription": "premium"}).eq("id", user.id).execute()
+        if update_res.data:
+            return {"message": "Subscription upgraded to premium."}
+        else:
+            raise HTTPException(status_code=400, detail="Failed to upgrade subscription.")
+    except Exception as e:
+        print(" Upgrade subscription error:", e)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
