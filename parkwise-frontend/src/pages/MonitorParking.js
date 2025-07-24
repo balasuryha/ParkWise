@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -11,7 +10,6 @@ function MonitorParking() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [currentAvailability, setCurrentAvailability] = useState(null);
-  const navigate = useNavigate();
 
   // Get current time and 24 hours from now
   const getCurrentDateTime = () => {

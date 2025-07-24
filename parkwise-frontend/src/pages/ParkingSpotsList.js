@@ -31,21 +31,11 @@ function ParkingSpotsList() {
   const [isSearching, setIsSearching] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(0); // Force re-render
 
-  // Debug: Log search value changes
-  useEffect(() => {
-    console.log('Search value changed:', search);
-  }, [search]);
-
-  // Debug: Log spots state changes
-  useEffect(() => {
-    console.log('Spots state changed:', spots.length, 'spots:', spots.map(s => s.nom_parking));
-  }, [spots]);
-
   // Fetch spots with pagination
   const fetchSpots = useCallback(async () => {
     setLoading(true);
     const offset = page * PAGE_SIZE;
-    const res = await fetch(`${BACKEND_URL}/parking-spots?limit=${PAGE_SIZE}&offset=${offset}`);
+    const res = await fetch(`${BACKEND_URL}/parking-spots?limit=${PAGE_SIZE}&offset=${offset}`); // No Authorization header
     const data = await res.json();
     const spotsArray = Array.isArray(data) ? data : (Array.isArray(data.data) ? data.data : []);
     if (spotsArray.length < PAGE_SIZE) setHasMore(false);
@@ -79,10 +69,8 @@ function ParkingSpotsList() {
 
   // Search functionality
   const handleSearch = async () => {
-    console.log('handleSearch called with search term:', search);
     
     if (!search.trim()) {
-      console.log('Empty search, resetting to normal view');
       setPage(0);
       setSpots([]);
       setHasMore(true);
@@ -98,32 +86,22 @@ function ParkingSpotsList() {
     
     try {
       // Fetch all spots (or a large enough set)
-      const res = await fetch(`${BACKEND_URL}/parking-spots?limit=1000&offset=0`);
+      const res = await fetch(`${BACKEND_URL}/parking-spots?limit=1000&offset=0`); // No Authorization header
       if (!res.ok) {
         throw new Error('Failed to fetch parking spots');
       }
       
       const data = await res.json();
-      console.log('Raw API response length:', Array.isArray(data) ? data.length : 'not array');
       
       const spotsArray = Array.isArray(data) ? data : (Array.isArray(data.data) ? data.data : []);
-      console.log('Processed spots array length:', spotsArray.length);
       
       if (spotsArray.length === 0) {
-        console.log('No spots found in API response');
         setSpots([]);
         setNoResults(true);
         return;
       }
       
-      // Log first few spots to see structure
-      console.log('First 3 spots:', spotsArray.slice(0, 3).map(s => ({ 
-        facilityid: s.facilityid, 
-        nom_parking: s.nom_parking 
-      })));
-      
       const searchNorm = normalizeString(search.trim());
-      console.log('Search term (normalized):', searchNorm);
       
       const filtered = spotsArray.filter(spot => {
         const name = spot.nom_parking || spot.name || spot.facility_name || spot.nom || spot.title || '';
@@ -134,20 +112,13 @@ function ParkingSpotsList() {
         const searchableText = `${name} ${address} ${description}`.toLowerCase();
         const normalizedSearchableText = normalizeString(searchableText);
         
-        console.log(`Checking: "${name}" | Searchable: "${searchableText}" | Normalized: "${normalizedSearchableText}" | Includes "${searchNorm}": ${normalizedSearchableText.includes(searchNorm)}`);
-        
         return normalizedSearchableText.includes(searchNorm);
       });
       
-      console.log('Filtered spots count:', filtered.length, 'out of', spotsArray.length);
-      console.log('Filtered spots names:', filtered.map(s => s.nom_parking));
-      
-      // Force a state update by creating a new array
       setSpots([...filtered]);
       setNoResults(filtered.length === 0);
       setForceUpdate(prev => prev + 1); // Force re-render
     } catch (error) {
-      console.error('Search error:', error);
       setNoResults(true);
     } finally {
       setLoading(false);
@@ -237,7 +208,6 @@ function ParkingSpotsList() {
             Clear
           </button>
         </div>
-        {console.log('Rendering spots:', spots.length, 'loading:', loading, 'noResults:', noResults)}
         {Array.isArray(spots) && spots.length === 0 && !loading && noResults ? (
           <div style={{ color: '#888', textAlign: 'center', margin: 32 }}>No parking found</div>
         ) : (

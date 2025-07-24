@@ -1,12 +1,28 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import './Login.css';
 
 export default function Login() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
+  useEffect(() => {
+    // Check for ?registered=1 in query params
+    const params = new URLSearchParams(location.search);
+    if (params.get('registered') === '1') {
+      setSuccessMsg('Successfully registered! Please log in.');
+    }
+    // Also support localStorage flag (for direct window.location.href)
+    if (localStorage.getItem('showRegisteredMsg')) {
+      setSuccessMsg('Successfully registered! Please log in.');
+      localStorage.removeItem('showRegisteredMsg');
+    }
+  }, [location.search]);
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -30,7 +46,8 @@ export default function Login() {
         localStorage.setItem('refresh_token', data.refresh_token);
         localStorage.setItem('user_email', data.user_email);
         localStorage.setItem('subscription', data.subscription);
-        navigate('/dashboard');
+        window.location.href = '/'; // Reload to update Header
+        // navigate('/');
       } else {
         throw new Error('No token received');
       }
@@ -41,28 +58,13 @@ export default function Login() {
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '20px',
-      fontFamily: 'Inter, sans-serif'
-    }}>
-      <div style={{
-        background: '#fff',
-        borderRadius: 16,
-        boxShadow: '0 2px 16px rgba(0,0,0,0.07)',
-        padding: 32,
-        width: 350,
-        maxWidth: '90%'
-      }}>
+    <div className="login-bg">
+      <div className="login-container">
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
-          <img src={process.env.PUBLIC_URL + '/parkwise-logo.png'} alt="ParkWise" style={{ height: 60, marginBottom: 8 }} />
-          <h2 style={{ fontWeight: 700, margin: 0 }}>Welcome Back</h2>
+          <img src={process.env.PUBLIC_URL + '/parkwise-logo.png'} alt="ParkWise" className="login-logo" />
+          <h2 className="login-title">Welcome Back</h2>
         </div>
+        {successMsg && <div className="login-success" style={{ color: 'green', marginBottom: 16, textAlign: 'center', fontWeight: 600 }}>{successMsg}</div>}
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: 18 }}>
             <input
@@ -71,7 +73,7 @@ export default function Login() {
               placeholder="Email Address"
               value={form.email}
               onChange={handleChange}
-              style={inputStyle}
+              className="login-input"
               required
             />
           </div>
@@ -82,49 +84,27 @@ export default function Login() {
               placeholder="Password"
               value={form.password}
               onChange={handleChange}
-              style={inputStyle}
+              className="login-input"
               required
             />
           </div>
           <div style={{ textAlign: 'right', marginBottom: 18 }}>
-            <a href="#" style={{ color: '#1976d2', fontSize: 14, textDecoration: 'none', fontWeight: 500 }}>Forgot password?</a>
+            <a href="#" className="login-forgot">Forgot password?</a>
           </div>
-          {error && <div style={{ color: 'red', marginBottom: 12 }}>{error}</div>}
+          {error && <div className="login-error">{error}</div>}
           <button
             type="submit"
-            style={{
-              width: '100%',
-              padding: '14px 0',
-              background: '#1886ff',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 8,
-              fontWeight: 700,
-              fontSize: 17,
-              marginBottom: 18,
-              cursor: 'pointer',
-              transition: 'background 0.2s'
-            }}
+            className="login-btn"
             disabled={loading}
           >
             Log In
           </button>
-          <div style={{ textAlign: 'center', fontSize: 15, color: '#888' }}>
+          <div className="login-bottom">
             Don't have an account?{' '}
-            <Link to="/signup" style={{ color: '#1976d2', fontWeight: 600, textDecoration: 'none' }}>Sign up</Link>
+            <Link to="/signup" className="login-signup-link">Sign up</Link>
           </div>
         </form>
       </div>
     </div>
   );
-}
-
-const inputStyle = {
-  width: '100%',
-  padding: '12px 14px',
-  margin: '8px 0',
-  borderRadius: 8,
-  border: '1px solid #ddd',
-  fontSize: 16,
-  outline: 'none'
-}; 
+} 

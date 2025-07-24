@@ -108,8 +108,6 @@ function ParkingList() {
     !isNaN(Number(selectedSpot.longitude))
     ? selectedSpot : null;
 
-  console.log('Invalid spots:', parkingSpots.filter(spot => !spot.latitude || !spot.longitude));
-
   // Determine location name for heading
   let locationName = '';
   if (location.state && location.state.name) {

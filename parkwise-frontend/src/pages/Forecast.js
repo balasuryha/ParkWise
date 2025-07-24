@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -11,7 +10,6 @@ function Forecast() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [plotUrl, setPlotUrl] = useState('');
-  const navigate = useNavigate();
 
   // Get current time and 24 hours from now
   const getCurrentDateTime = () => {
@@ -60,8 +58,14 @@ function Forecast() {
 
     try {
       // Get forecast data
+      const token = localStorage.getItem('access_token');
       const forecastResponse = await fetch(
-        `${BACKEND_URL}/forecast?facility_id=${selectedFacility}&start_date=${startDate}`
+        `${BACKEND_URL}/forecast?facility_id=${selectedFacility}&start_date=${startDate}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
       );
       
       if (!forecastResponse.ok) {
@@ -73,7 +77,12 @@ function Forecast() {
 
       // Get forecast plot
       const plotResponse = await fetch(
-        `${BACKEND_URL}/forecast-parking?facilityid=${selectedFacility}&start_date=${startDate}`
+        `${BACKEND_URL}/forecast-parking?facilityid=${selectedFacility}&start_date=${startDate}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
       );
       
       if (plotResponse.ok) {

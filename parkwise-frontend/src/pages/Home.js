@@ -5,15 +5,6 @@ import { FaCrosshairs, FaMapMarkerAlt, FaSearch } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import ParkingMap from '../components/ParkingMap';
 
-const vehicleTypes = ['STANDARD', 'ELECTRIC_CAR', 'MOTOR_BIKE', 'DISABLED'];
-
-function formatVehicleTypeForDisplay(type) {
-  return type
-    .split('_')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(' ');
-}
-
 function Home() {
   const [search, setSearch] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
@@ -32,10 +23,12 @@ function Home() {
   useEffect(() => {
     fetch(`${process.env.REACT_APP_BACKEND_URL}/parking-spots?limit=6`)
       .then(res => res.json())
-      .then(data => setPopularSpots(data));
+      .then(data => {
+        const spotsArray = Array.isArray(data) ? data : (Array.isArray(data.data) ? data.data : []);
+        setPopularSpots(spotsArray);
+      })
+      .catch(() => setPopularSpots([]));
   }, []);
-
-  // REMOVED useEffect to fetch vehicle types from API
 
   // Helper for minTime logic
   function getMinTime(date) {
@@ -298,9 +291,10 @@ function Home() {
                   value={selectedVehicleType} 
                   onChange={(e) => setSelectedVehicleType(e.target.value)}
                 >
-                  {vehicleTypes.map(type => (
-                    <option key={type} value={type}>{formatVehicleTypeForDisplay(type)}</option>
-                  ))}
+                  <option value="STANDARD">Standard</option>
+                  <option value="ELECTRIC_CAR">Electric Car</option>
+                  <option value="MOTOR_BIKE">Motor Bike</option>
+                  <option value="DISABLED">Disabled</option>
                 </select>
               </div>
             </div>
@@ -429,7 +423,7 @@ function Home() {
                 Enjoy the convenience of booking a parking spot at the venue ahead of time, ensuring you have a space when you arrive for games, concerts, and more.
               </div>
               <div className="mb-4" style={{ maxWidth: 400 }}>
-                {popularSpots.map(spot => (
+                {Array.isArray(popularSpots) && popularSpots.map(spot => (
                   <div key={spot.facilityid || spot.id}>
                     <a
                       href={`https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=${spot.latitude},${spot.longitude}`}
