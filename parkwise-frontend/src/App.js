@@ -9,6 +9,7 @@ import MonitorParking from './pages/MonitorParking';
 import ParkingList from './pages/ParkingList';
 import ParkingSpotsList from './pages/ParkingSpotsList';
 import Signup from './pages/Signup';
+import About from './pages/About';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <main className="flex-grow-1">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
             <Route path="/parking-list" element={<ParkingList />} />
             <Route path="/all-parking" element={<ParkingSpotsList />} />
             <Route path="/signup" element={<Signup />} />
