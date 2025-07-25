@@ -35,7 +35,7 @@ app.add_api_route("/upgrade-subscription", upgrade_subscription, methods=["POST"
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://balasuryha.github.io/"],  # Only allow your React dev server
+    allow_origins=["http://localhost:3000"],  # Only allow your React dev server
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

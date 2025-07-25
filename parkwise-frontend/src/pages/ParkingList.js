@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FaWalking } from 'react-icons/fa';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import ParkingMap from '../components/ParkingMap';
 
 function ParkingList() {
@@ -199,7 +199,13 @@ function ParkingList() {
                     </p>
 
                     <div className="d-flex justify-content-end align-items-center mt-2">
-                      <button className="btn btn-link text-decoration-none me-2">Details</button>
+                      <Link
+                        to={{ pathname: `/parking-detail/${spot.id}` }}
+                        state={{ spot }}
+                        className="btn btn-link text-decoration-none me-2"
+                      >
+                        Details
+                      </Link>
                       <a
                         href={`https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=${spot.lat},${spot.lng}`}
                         target="_blank"

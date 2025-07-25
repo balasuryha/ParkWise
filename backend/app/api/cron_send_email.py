@@ -35,15 +35,15 @@ def send_email(to_email: str, subject: str, message: str):
             server.starttls()
             server.login(smtp_user, smtp_pass)
             server.send_message(msg)
-        logger.info(f"✅ Email sent to {to_email}")
+        logger.info(f"Email sent to {to_email}")
     except Exception as e:
-        logger.error(f"❌ Failed to send email to {to_email}: {e}")
+        logger.error(f"Failed to send email to {to_email}: {e}")
         raise
 
 # -------------------- Main Cron Job --------------------
 def cron_send_email():
     now = datetime.now(timezone.utc)
-    logger.info(f"🚀 Running cron job at {now.isoformat()}")
+    logger.info(f"Running cron job at {now.isoformat()}")
 
     response = supabase.table("parking_monitor_jobs")\
         .select("*")\
@@ -51,7 +51,7 @@ def cron_send_email():
         .execute()
 
     if not response.data:
-        logger.info("🔕 No active monitoring jobs found.")
+        logger.info("No active monitoring jobs found.")
         return
 
     for job in response.data:
@@ -60,7 +60,7 @@ def cron_send_email():
         original_free_places = job.get("original_free_places")
         monitor_time_str = job.get("monitor_for_time")
 
-        logger.debug(f"🧠 Raw monitor_for_time string: {monitor_time_str}")
+        logger.debug(f"Raw monitor_for_time string: {monitor_time_str}")
 
         # Parse and ensure UTC-aware
         try:
@@ -68,13 +68,13 @@ def cron_send_email():
             if monitor_for_time.tzinfo is None:
                 monitor_for_time = monitor_for_time.replace(tzinfo=timezone.utc)
         except Exception as e:
-            logger.error(f"⛔ Failed to parse monitor_for_time: {monitor_time_str} — {e}")
+            logger.error(f"Failed to parse monitor_for_time: {monitor_time_str} — {e}")
             continue
 
-        logger.debug(f"⏱️ Checking job ID {job['id']} for {user_email} (monitor until {monitor_for_time})")
+        logger.debug(f"Checking job ID {job['id']} for {user_email} (monitor until {monitor_for_time})")
 
         if now >= monitor_for_time:
-            logger.info(f"⏳ Monitor time passed for job ID {job['id']}, disabling it.")
+            logger.info(f"Monitor time passed for job ID {job['id']}, disabling it.")
             supabase.table("parking_monitor_jobs")\
                 .update({"is_active": False})\
                 .eq("id", job["id"])\
@@ -89,17 +89,17 @@ def cron_send_email():
             .execute()
 
         if not rt_response.data:
-            logger.warning(f"⚠️ No real-time data found for facility_id={facility_id}")
+            logger.warning(f"No real-time data found for facility_id={facility_id}")
             continue
 
         current_free = rt_response.data[0]["counterfreeplaces"]
-        logger.debug(f"📊 Job ID {job['id']} — Original: {original_free_places}, Current: {current_free}")
+        logger.debug(f"Job ID {job['id']} — Original: {original_free_places}, Current: {current_free}")
 
         if current_free < (0.7 * original_free_places):
-            logger.info(f"🚨 Triggering alert for {user_email} — availability dropped below 70%.")
+            logger.info(f"Triggering alert for {user_email} — availability dropped below 70%.")
             send_email(
                 to_email=user_email,
-                subject="🚗 ParkWise Alert: Spots Decreasing",
+                subject="ParkWise Alert: Spots Decreasing",
                 message=(
                     f"Availability Alert!\n\n"
                     f"Parking {facility_id} has dropped below 70% availability.\n"

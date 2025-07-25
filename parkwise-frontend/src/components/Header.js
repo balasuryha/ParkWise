@@ -162,7 +162,7 @@ function Header() {
                     </div>
                     
                     {/* Send Parking Alert - only for premium users */}
-                    {user.subscription === 'premium' && (
+                    {/* {user.subscription === 'premium' && (
                       <div style={{ padding: '16px 24px', borderBottom: '1px solid #f0f0f0' }}>
                         <div style={{ 
                           padding: '12px 16px',
@@ -176,7 +176,7 @@ function Header() {
                           <span style={{ fontWeight: 500, color: '#333', fontSize: 14 }}>Send Parking Alert</span>
                         </div>
                       </div>
-                    )}
+                    )} */}
                     {user.subscription !== 'premium' && (
                       <div style={{ padding: '12px 24px', borderBottom: '1px solid #f0f0f0' }}>
                         <div style={{ 

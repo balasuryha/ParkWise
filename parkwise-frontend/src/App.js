@@ -6,6 +6,7 @@ import Forecast from './pages/Forecast';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import MonitorParking from './pages/MonitorParking';
+import ParkingDetail from './pages/ParkingDetail';
 import ParkingList from './pages/ParkingList';
 import ParkingSpotsList from './pages/ParkingSpotsList';
 import Signup from './pages/Signup';
@@ -24,6 +25,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/forecast" element={<Forecast />} />
             <Route path="/monitor-parking" element={<MonitorParking />} />
+            <Route path="/parking-detail/:id" element={<ParkingDetail />} />
           </Routes>
         </main>
         <Footer />

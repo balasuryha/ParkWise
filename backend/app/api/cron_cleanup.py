@@ -12,7 +12,7 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 def delete_inactive_jobs():
-    logger.info("🧹 Running cleanup job for inactive monitor records...")
+    logger.info("Running cleanup job for inactive monitor records...")
 
     # Fetch inactive jobs
     response = supabase.table("parking_monitor_jobs")\
@@ -23,7 +23,7 @@ def delete_inactive_jobs():
     inactive_jobs = response.data
 
     if not inactive_jobs:
-        logger.info("✅ No inactive jobs to delete.")
+        logger.info("No inactive jobs to delete.")
         return
 
     for job in inactive_jobs:
@@ -31,9 +31,9 @@ def delete_inactive_jobs():
             .delete()\
             .eq("id", job["id"])\
             .execute()
-        logger.info(f"🗑️ Deleted job ID {job['id']}")
+        logger.info(f"Deleted job ID {job['id']}")
 
-    logger.info(f"🧼 Cleanup complete. Deleted {len(inactive_jobs)} jobs.")
+    logger.info(f"Cleanup complete. Deleted {len(inactive_jobs)} jobs.")
 
 if __name__ == "__main__":
     delete_inactive_jobs()

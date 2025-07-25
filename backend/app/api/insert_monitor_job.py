@@ -10,7 +10,7 @@ class MonitorRequest(BaseModel):
     facility_id: str
     monitor_for_time: datetime  # time the user wants to be alerted for
 
-# ✅ Function to get current free places from DB
+# Function to get current free places from DB
 def get_current_availability_from_db(facility_id: str) -> int:
     response = supabase.table("real_time_parking_spots")\
         .select("counterfreeplaces")\
@@ -23,7 +23,7 @@ def get_current_availability_from_db(facility_id: str) -> int:
 
     return response.data[0]["counterfreeplaces"]
 
-# ✅ Function to insert a monitoring job
+# Function to insert a monitoring job
 def insert_monitor_job(user_email: str, facility_id: str, original_free_places: int, monitor_for_time: datetime):
     row = {
         "user_email": user_email,
@@ -39,7 +39,7 @@ def insert_monitor_job(user_email: str, facility_id: str, original_free_places: 
       raise HTTPException(status_code=500, detail=f"Failed to schedule monitoring job: {e}")
 
 
-# ✅ Endpoint: Create a monitor alert job
+# Endpoint: Create a monitor alert job
 @router.post("/monitor-parking-alert")
 def monitor_alert(
     data: MonitorRequest,

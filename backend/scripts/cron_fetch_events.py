@@ -40,7 +40,7 @@ def geocode_address(address):
     return None, None
 
 # Fetch event data
-print("📡 Fetching events from 'Que Faire à Paris' API...")
+print("Fetching events from 'Que Faire à Paris' API...")
 api_url = "https://opendata.paris.fr/api/records/1.0/search/"
 params = {
     "dataset": "que-faire-a-paris-",

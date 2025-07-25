@@ -57,7 +57,7 @@ def check_monitoring_jobs():
             try:
                 send_email(
                     to_email=user_email,
-                    subject="🚗 ParkWise Alert: Spots Decreasing",
+                    subject="ParkWise Alert: Spots Decreasing",
                     message=(
                         f"Availability Alert!\n\n"
                         f"Parking {facility_id} has dropped below 70% availability.\n"
@@ -66,6 +66,6 @@ def check_monitoring_jobs():
                         f"Time: {datetime.utcnow().isoformat()}"
                     )
                 )
-                print(f"✅ Email sent to {user_email}")
+                print(f"Email sent to {user_email}")
             except Exception as e:
-                print(f"❌ Failed to send email to {user_email}: {e}")
+                print(f"Failed to send email to {user_email}: {e}")

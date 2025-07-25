@@ -16,7 +16,7 @@ if not SUPABASE_URL or not SUPABASE_KEY:
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # --- Fetch image mapping once ---
-print("🔄 Fetching image data from photo API...")
+print("Fetching image data from photo API...")
 image_api_url = "https://opendata.saemes.fr/api/explore/v2.1/catalog/datasets/photos-parkings-et-zones-voirie-saemes/records?limit=100"
 
 try:

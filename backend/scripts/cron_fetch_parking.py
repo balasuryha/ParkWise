@@ -50,7 +50,7 @@ try:
 
         image_results[name] = img_url
         
-        print(f"🖼️ Found image for  {name},{image_results[name]}")
+        print(f"Found image for  {name},{image_results[name]}")
 
        
 
@@ -58,8 +58,8 @@ try:
    
     
 except Exception as e:
-    print(f"❌ Error while processing image metadata: {e}")
-    print("⚠️ Continuing with partially fetched image_results...")
+    print(f"Error while processing image metadata: {e}")
+    print("Continuing with partially fetched image_results...")
 
 
 
@@ -133,7 +133,7 @@ for record in records:
         supabase.table("real_time_parking_spots").insert(row).execute()
         success_realtime += 1
     except Exception as e:
-        print(f"❌ Failed to insert into real_time_parking_spots for facility {facility_id}: {e}")
+        print(f"Failed to insert into real_time_parking_spots for facility {facility_id}: {e}")
 
 # Call the stored procedure
 print("📡 Calling Supabase function: update_event_status_realtime()...")
